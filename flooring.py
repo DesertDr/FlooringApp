@@ -33,7 +33,14 @@ class Home():
     def add_room(room_name):
         Home.num_of_rooms += 1
         Home.room_list.append(room_name)
-        
+        if Home.num_of_rooms == 1:
+            print(f"Room on file:", end=' ')
+            print(*Home.room_list)
+        else:
+            print(f"Rooms on file:", end=' ')
+            print(*Home.room_list, sep=', ')
+
+    # def list_rooms        
         
 class Room():
     
@@ -56,13 +63,6 @@ class Room():
         # super().__init__(self.name)
         self.name = name
         Home.add_room(self.name)
-        if Home.num_of_rooms == 1:
-            print(f"Room on file:", end=' ')
-            print(*Home.room_list)
-        else:
-            print(f"Rooms on file:", end=' ')
-            print(*Home.room_list, sep=', ')
-
         
     # def __str__(self) -> str:
     #     return super().__str__()
@@ -94,24 +94,52 @@ class Room():
         else:
             for n in range(0, int(doors[0])):
                 door_width = parse_input(
-                    f'Door {n + 1} width: ', 0, self.max_door_width)
+                    f'Door {n + 1} width: ', 0, self.max_door_width
+                    )
                 doors.append(door_width[0])
                 self.transition = self.transition + door_width[0]
                 
-        cabinet_sections = parse_input('Number of cabinet sections: ', 0, self.max_cabinet_sections)
+        cabinet_sections = parse_input(
+            'Number of cabinet sections: ', 0, self.max_cabinet_sections
+            )
         if cabinet_sections[0] <= 0:
             self.cabinet_lf = [0, 0]
             self.exposed_ends = [0, 0]
         else:
-            self.cabinet_lf = parse_input('Cabinet linear footage: ', 0, self.max_cabinet_lf)
-            self.exposed_ends = parse_input('Exposed cabinet ends: ', 0, self.max_exposed_ends)
+            self.cabinet_lf = parse_input(
+                'Cabinet linear footage: ', 0, self.max_cabinet_lf
+                )
+            self.exposed_ends = parse_input(
+                'Exposed cabinet ends: ', 0, self.max_exposed_ends
+                )
 
-        # Cabinet width default is 1 Foot 9 inches    
-        self.cabinet_fp = self.cabinet_width * self.cabinet_lf[0]
-        self.trim = self.cabinet_lf[0] + self.cabinet_width * self.exposed_ends[0]
-        
-        self.area = width[0] * length[0] - no_of_bumps[0] * self.wall_width[0] - self.cabinet_fp
-        self.baseboard = walls + bump_lf - self.transition - self.cabinet_lf[0]
+        # Cabinet width default is 1 Foot 9 inches
+        # Cabinet footprint calculation
+        self.cabinet_fp = (
+            self.cabinet_width *
+            self.cabinet_lf[0]
+        )
+        # Cabinet trim calculation
+        self.trim = (
+            self.cabinet_lf[0] + 
+            self.cabinet_width * 
+            self.exposed_ends[0]
+        )
+        # Floor area calculation
+        self.area = (
+            width[0] * 
+            length[0] - 
+            no_of_bumps[0] * 
+            self.wall_width[0] - 
+            self.cabinet_fp
+        )
+        # Baseboard calculation
+        self.baseboard = (
+            walls + # walls = (width[0] + length[0]) * 2
+            bump_lf - # bump_lf = bump_depth[0] * no_of_bumps[0] * 2
+            self.transition - 
+            self.cabinet_lf[0]
+        )
         
         
     def list(self):
