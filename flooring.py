@@ -56,7 +56,13 @@ class Room():
         # super().__init__(self.name)
         self.name = name
         Home.add_room(self.name)
-        print(Home.room_list)
+        if Home.num_of_rooms == 1:
+            print(f"Room on file:", end=' ')
+            print(*Home.room_list)
+        else:
+            print(f"Rooms on file:", end=' ')
+            print(*Home.room_list, sep=', ')
+
         
     # def __str__(self) -> str:
     #     return super().__str__()
@@ -130,10 +136,12 @@ class Room():
             print(round(self.trim * self.excess, 2), ' feet of cabinet trim')
         if Home.num_of_rooms == 1:
             print(f"\nThere is {Home.num_of_rooms} room on file.")
-            print(f"Room measured: {Home.room_list}")
+            print(f"Room measured:", end=' ')
+            print(*Home.room_list)
         else:
             print(f"\nThere are {Home.num_of_rooms} rooms on file.")
-            print(f"Rooms measured: {Home.room_list}")
+            print(f"Room measured:", end=' ')
+            print(*Home.room_list, sep=', ')
 
     @property
     def room_name(self) -> str:
@@ -171,15 +179,20 @@ def end_measure():
         if answer == False:
             return False
         else:
-            print(Home.room_list)
+            if Home.num_of_rooms == 1:
+                print(f"Room on file:", end=' ')
+                print(*Home.room_list)
+            else:
+                print(f"Rooms on file:", end=' ')
+                print(*Home.room_list, sep=', ')
             return True
         
 # Main Function
 def main():
     print(f'\nWelcome to the flooring program ')
     run = True
-    r1 = Room(input('\nPlease enter room name: '))
     while run == True:
+        r1 = Room(input('\nPlease enter room name: '))
         # r1.load_room()
         r1.measure()
         r1.attributes()
