@@ -1,5 +1,6 @@
 # Handling user input, error handling, minimum and maximum values are given depending
 # on parts of the room being measured. IE: number of doors (must have at least 1), number of cabinets (can be 0), etc
+import YNBool_Converter
 def parse_input(message, minimum_number, excessive_number):
     while True:
         excessive_number_bypass = False
