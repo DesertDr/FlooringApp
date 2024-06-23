@@ -17,9 +17,8 @@
 # NOTE: add file output functionality - sys log
 # NOTE: ADD BLUTOOTH CAPABILITY - PyBluez
 
-# Simple Yes/No Boolean Converter
-import parse_input
-import YNBool_Converter
+from YNBool_Converter import YNBool_Converter
+from parse_input import parse_input
 
 class Home():
     room_list = []
@@ -157,7 +156,8 @@ class Room():
         if name_guess not in Home.room_list:
             print(f"{name_guess} is not a room on the list ")
         if name_guess == 1:
-            type(Home.room_list[1])
+            print(Home.room_list[1])
+            print(Home.room_list['1'])
             room_name = vars(Home.room_list[1][0])
         if name_guess == 2:
             room_name = vars(Home.room_list[2][0])
@@ -180,7 +180,7 @@ def main():
     run = True
     r1 = Room(input('\nPlease enter room name: '))
     while run == True:
-        r1.load_room()
+        # r1.load_room()
         r1.measure()
         r1.attributes()
         run = end_measure()
