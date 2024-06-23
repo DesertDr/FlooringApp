@@ -1,0 +1,11 @@
+safe.directory=/run/media/love/ssd/programming/flooringapp
+user.name=DesertDr
+user.email=fa.az@tutanota.com
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=https://github.com/DesertDr/flooringapp.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.master.remote=origin
+branch.master.merge=refs/heads/master

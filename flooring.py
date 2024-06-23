@@ -18,47 +18,8 @@
 # NOTE: ADD BLUTOOTH CAPABILITY - PyBluez
 
 # Simple Yes/No Boolean Converter
-def YNBool_Converter(message):
-    yes_no_bool = {
-        'n': False,
-        'no': False,
-        'y': True,
-        'ye': True,
-        'yes': True
-    }
-    return yes_no_bool.get(message.lower(), False)
-
-# Handling user input, error handling, minimum and maximum values are given depending
-# on parts of the room being measured. IE: number of doors (must have at least 1), number of cabinets (can be 0), etc
-def Parse_input(message, minimum_number, excessive_number):
-    while True:
-        excessive_number_bypass = False
-        try:
-            number = float(input(message))
-        except ValueError:
-            print('Invalid value: ValueError, Please enter a numerical value ')
-            continue
-        except NameError:
-            print('Invalid value: NameError ')
-            continue
-        
-        if number == 0 and minimum_number == 0:
-            break
-        if number < minimum_number:
-            print(f"Please enter a number greater than {minimum_number}")
-            continue
-        if excessive_number == 0:
-            break
-        elif number > excessive_number:
-            if YNBool_Converter(input('Are you sure, Y/N? \n> ')) == True:
-                excessive_number_bypass = True
-                break
-            else:
-                continue
-        else:
-            break
-    return[number, excessive_number_bypass]
-
+import parse_input
+import YNBool_Converter
 
 class Home():
     room_list = []
@@ -107,37 +68,38 @@ class Room():
     # Measure room: Take input on basic dimensions and details, IE: width, length, number of doors, cabinet sections, etc.
     def measure(self):
         # The extra parameters provided to Parse_input are the minimum and maximum values for the input: 0 for max = no max.
-        width = Parse_input('\nRoom width: ', 0, 0)
-        length = Parse_input('Room length: ', 0, 0)
+        width = parse_input('\nRoom width: ', 0, 0)
+        length = parse_input('Room length: ', 0, 0)
         
         walls = (width[0] + length[0]) * 2
         
-        no_of_bumps = Parse_input('Bumped in walls: ', 0, 0)
+        # Bump in walls are only calculated if there are any bumps. Pony walls are an example. Pillars are 2 bumps.
+        no_of_bumps = parse_input('Bumped in walls: ', 0, 0)
         if no_of_bumps[0] == 0:
             bump_depth = [0, 0]
         else:
-            bump_depth = Parse_input('Wall depth: ', 0, 0)
+            bump_depth = parse_input('Wall depth: ', 0, 0)
             
         bump_lf = bump_depth[0] * no_of_bumps[0] * 2
         self.transition = 0
         
-        doors = Parse_input('Number of doors: ', 0, self.max_doors)
+        doors = parse_input('Number of doors: ', 0, self.max_doors)
         if doors[0] == 0:
             door_width = [0, 0]
         else:
             for n in range(0, int(doors[0])):
-                door_width = Parse_input(
+                door_width = parse_input(
                     f'Door {n + 1} width: ', 0, self.max_door_width)
                 doors.append(door_width[0])
                 self.transition = self.transition + door_width[0]
                 
-        cabinet_sections = Parse_input('Number of cabinet sections: ', 0, self.max_cabinet_sections)
+        cabinet_sections = parse_input('Number of cabinet sections: ', 0, self.max_cabinet_sections)
         if cabinet_sections[0] <= 0:
             self.cabinet_lf = [0, 0]
             self.exposed_ends = [0, 0]
         else:
-            self.cabinet_lf = Parse_input('Cabinet linear footage: ', 0, self.max_cabinet_lf)
-            self.exposed_ends = Parse_input('Exposed cabinet ends: ', 0, self.max_exposed_ends)
+            self.cabinet_lf = parse_input('Cabinet linear footage: ', 0, self.max_cabinet_lf)
+            self.exposed_ends = parse_input('Exposed cabinet ends: ', 0, self.max_exposed_ends)
 
         # Cabinet width default is 1 Foot 9 inches    
         self.cabinet_fp = self.cabinet_width * self.cabinet_lf[0]
@@ -174,6 +136,21 @@ class Room():
             print(f"\nThere are {Home.num_of_rooms} rooms on file.")
             print(f"Rooms measured: {Home.room_list}")
 
+    @property
+    def room_name(self) -> str:
+        print(f'"{self.name}" called')
+        return self.name
+
+    @room_name.setter
+    def room_name(self, value: str):
+        print(f'"{self.name}" set to "{value}"')
+        self.name = value
+
+    @room_name.deleter
+    def room_name(self):
+        print(f'"{self.name}" deleted')
+        del self.name       
+
     # Load room function, Choose from list
     def load_room(self):
         name_guess = input('\nChoose a room to view/change attributes ')
@@ -187,10 +164,7 @@ class Room():
         else:
             print(f"Please make a choice from the list ")
             print(Home.room_list)
-            
-    def rename(self, new_name):
-        self.name = new_name
-        
+
 # Returns True or False as to whether to continue measuring, prints room list on continue | Refactored 6/16/2024
 def end_measure():
         answer = YNBool_Converter(input('\nContinue measuring, Y/N?'))
@@ -203,13 +177,13 @@ def end_measure():
 # Main Function
 def main():
     print(f'\nWelcome to the flooring program ')
-    Run = True
-    room_name = Room(input('\nPlease enter room name: '))
-    while Run == True:
-        room_name.load_room()
-        room_name.measure()
-        room_name.attributes()
-        Run = end_measure()
+    run = True
+    r1 = Room(input('\nPlease enter room name: '))
+    while run == True:
+        r1.load_room()
+        r1.measure()
+        r1.attributes()
+        run = end_measure()
         
                                
 if __name__ == '__main__':
